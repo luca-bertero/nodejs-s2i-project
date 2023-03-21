@@ -2,20 +2,40 @@ const Order = require('../Entities/orders');
 
 exports.getAllOrders = async (req, res) => {
   const date = req.query.date;
-  console.log(date);
+
   try {
     if (!date) {
-      res.status(404).json({
-        success: false,
-        error: 'Order not found',
+      const orders = await Order.find();
+      if (!orders) {
+        res.status(404).json({
+          success: false,
+          error: 'Order not found',
+        });
+        return;
+      };
+
+      res.json({
+        success: true,
+        data: orders,
       });
-      return;
     }
-    const orders = await Order.find();
-    res.json({
-      success: true,
-      data: orders,
-    });
+    else{
+      const ordersDate = await Order.find({data: {$gt: new Date(date)}});
+
+      if (!ordersDate) {
+        res.status(404).json({
+          success: false,
+          error: 'Order not found',
+        });
+        return;
+      };
+
+      res.json({
+        success: true,
+        data: ordersDate,
+      });
+    };
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -63,12 +83,13 @@ exports.getOrderByProduct = async (req, res) => {
 
 exports.addOrder = async (req, res) => {
   try {
-    const { products, users } = req.body;
+    const { products, users, date } = req.body;
 
     // Create a new instance of the Order model
     const order = new Order({
       products,
-      users
+      users,
+      data: new Date(date)
     });
     await order.save();
     res.status(201).json({
