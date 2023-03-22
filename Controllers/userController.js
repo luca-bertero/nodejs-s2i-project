@@ -41,7 +41,6 @@ exports.addUser = async (req, res) => {
   try {
     const { name, surname, email } = req.body;
 
-    // Create a new instance of the User model
     const user = new User({
       name,
       surname,

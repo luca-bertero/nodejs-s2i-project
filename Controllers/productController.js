@@ -41,7 +41,6 @@ exports.addProduct = async (req, res) => {
   try {
     const { name } = req.body;
 
-    // Create a new instance of the Product model
     const product = new Product({
       name
     });

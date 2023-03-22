@@ -85,7 +85,6 @@ exports.addOrder = async (req, res) => {
   try {
     const { products, users, date } = req.body;
 
-    // Create a new instance of the Order model
     const order = new Order({
       products,
       users,
